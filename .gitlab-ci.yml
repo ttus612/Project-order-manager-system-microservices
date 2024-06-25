@@ -1,0 +1,156 @@
+image: docker
+services:
+    - docker:dind 
+
+variables:
+  DISCOVERY_SERVICE_DOCKER_HUB: ttus612/discovery_server
+  API_GATEWAY_DOCKER_HUB: ttus612/apigateway
+  JWT_SERVER_DOCKER_HUB: ttus612/jwt_server
+  ORDER_SERVICE_DOCKER_HUB: ttus612/order_server
+  PRODUCT_SERVICE_DOCKER_HUB: ttus612/product_server
+  SHIPPING_SERVICE_DOCKER_HUB: ttus612/shipping_server
+  SUPPLIER_SERVICE_DOCKER_HUB: ttus612/supplier_server
+  USER_SERVICE_DOCKER_HUB: ttus612/user_server
+  WAREHOUSE_SERVICE_DOCKER_HUB: ttus612/warehouse_server
+  IMAGE_TAG: v1.0
+
+stages:          
+  - build
+  - deploy
+
+build-discovery-server:
+  stage: build
+  variables:
+    GIT_STRATEGY: clone
+  before_script:
+    - docker login -u $DOCKER_USER_DOCKER_HUB -p $DOCKER_PASS_DOCKER_HUB
+  script:
+    - cd DiscoveryServer
+    - docker build -t $DISCOVERY_SERVICE_DOCKER_HUB:$IMAGE_TAG .
+    - docker push $DISCOVERY_SERVICE_DOCKER_HUB:$IMAGE_TAG
+  only:
+    - main
+  tags:
+    - tag-tu
+
+build-api-gateway:
+  stage: build
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - cd ApiGateway
+    - docker build -t $API_GATEWAY_DOCKER_HUB:$IMAGE_TAG .
+    - docker push $API_GATEWAY_DOCKER_HUB:$IMAGE_TAG
+  only:
+    - main
+  tags:
+    - tag-tu
+
+build-jwt-server:
+  stage: build
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - cd JWTServer
+    - docker build -t $JWT_SERVER_DOCKER_HUB:$IMAGE_TAG .
+    - docker push $JWT_SERVER_DOCKER_HUB:$IMAGE_TAG
+  only:
+    - main
+  tags:
+    - tag-tu
+
+build-order-server:
+  stage: build
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - cd OrderServer
+    - docker build -t $ORDER_SERVICE_DOCKER_HUB:$IMAGE_TAG .
+    - docker push $ORDER_SERVICE_DOCKER_HUB:$IMAGE_TAG
+  only:
+    - main
+  tags:
+    - tag-tu
+
+build-product-server:
+  stage: build
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - cd ProductServer
+    - docker build -t $PRODUCT_SERVICE_DOCKER_HUB:$IMAGE_TAG .
+    - docker push $PRODUCT_SERVICE_DOCKER_HUB:$IMAGE_TAG
+  only:
+    - main
+  tags:
+    - tag-tu
+
+build-shipping-server:
+  stage: build
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - cd ShippingServer
+    - docker build -t $SHIPPING_SERVICE_DOCKER_HUB:$IMAGE_TAG .
+    - docker push $SHIPPING_SERVICE_DOCKER_HUB:$IMAGE_TAG
+  only:
+    - main
+  tags:
+    - tag-tu
+
+build-supplier-server:
+  stage: build
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - cd SupplierServer
+    - docker build -t $SUPPLIER_SERVICE_DOCKER_HUB:$IMAGE_TAG .
+    - docker push $SUPPLIER_SERVICE_DOCKER_HUB:$IMAGE_TAG
+  only:
+    - main
+  tags:
+    - tag-tu
+
+build-user-server:
+  stage: build
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - cd UserServer
+    - docker build -t $USER_SERVICE_DOCKER_HUB:$IMAGE_TAG .
+    - docker push $USER_SERVICE_DOCKER_HUB:$IMAGE_TAG
+  only:
+    - main
+  tags:
+    - tag-tu
+
+build-warehouse-server:
+  stage: build
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - cd WarehouseServer
+    - docker build -t $WAREHOUSE_SERVICE_DOCKER_HUB:$IMAGE_TAG .
+    - docker push $WAREHOUSE_SERVICE_DOCKER_HUB:$IMAGE_TAG
+  only:
+    - main
+  tags:
+    - tag-tu
+
+deploy-job:     
+  stage: deploy 
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - echo "Deploying the application tut..."
+    - sudo docker rm -f $(sudo docker ps -a | grep -v "order-manager-system_mariadb_1" | grep -v "order-manager-system_redis_1" | cut -d ' ' -f1) || true
+    - docker-compose up -d
+    - sudo docker rmi $(sudo docker images -f "dangling=true" -q) || true
+    - echo "Application deployed successfully."
+  only:
+    - main
+  tags:
+    - tag-tu
+   
+
+

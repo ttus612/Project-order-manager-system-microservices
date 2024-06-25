@@ -1,0 +1,31 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka/
+    register-with-eureka:
+      value: true
+    fetch-registry:
+      value: true
+    # instance:
+    #   hostname: localhost
+
+
+resilience4j:
+  rate-limiter:
+    instances:
+      userService:
+        limitForPeriod: 2
+        limitRefreshPeriod: 4s
+        timeoutDuration: 10s
+        registerHealthIndicator: true
+        event-consumer-buffer-size: 100
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,106 @@
+services:
+  mariadb:
+    image: mariadb:11.1
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=sapassword
+    ports:
+      - '3306:3306'
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - '6379:6379'
+
+  discovery-server:
+    image: ttus612/discovery_server:v1.0
+    ports:
+      - '8761:8761'
+    healthcheck:
+      test: ["CMD-SHELL", " netstat -an | grep -q 8761"]
+
+  api-gateway:
+    image: ttus612/apigateway:v1.0
+    ports:
+      - '8080:8080'
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+
+  jwt-server:
+    image: ttus612/jwt_server:v1.0 
+    ports:
+      - '9898:9898'
+    environment:
+      - DB_HOST=mariadb
+      - DB_PASSWORD=sapassword
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+
+  order-server:
+    image: ttus612/order_server:v1.0
+    ports:
+      - '8081:8081'
+    environment:
+      - DB_HOST=mariadb
+      - DB_PASSWORD=sapassword
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+
+  user-server:
+    image: ttus612/user_server:v1.0
+    ports:
+      - '8082:8082'
+    environment:
+      - DB_HOST=mariadb
+      - DB_PASSWORD=sapassword
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+
+  product-server:
+    image: ttus612/product_server:v1.0
+    ports:
+      - '8083:8083'
+    environment:
+      - DB_HOST=mariadb
+      - DB_PASSWORD=sapassword
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+
+  supplier-server:
+    image: ttus612/supplier_server:v1.0
+    ports:
+      - '8084:8084'
+    environment:
+      - DB_HOST=mariadb
+      - DB_PASSWORD=sapassword
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+
+  warehouse-server:
+    image: ttus612/warehouse_server:v1.0
+    ports:
+      - '8085:8085'
+    environment:
+      - DB_HOST=mariadb
+      - DB_PASSWORD=sapassword
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+ 
+  shipping-server:
+    image: ttus612/shipping_server:v1.0
+    ports:
+      - '8086:8086'
+    environment:
+      - DB_HOST=mariadb
+      - DB_PASSWORD=sapassword
+    depends_on:
+      discovery-server:
+        condition: service_healthy

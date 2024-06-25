@@ -1,0 +1,36 @@
+build-job:       
+  stage: build
+  script:
+    - "cd OrderServer"
+    - echo "Compiling the code..."
+    - "gradle build"
+    - echo "Compile complete."
+  only:
+    - main
+
+test-job:   
+  stage: test
+  script:
+    - "cd OrderServer"
+    - echo "Running unit tests.."
+    - "gradle test"
+  only:
+    - main
+
+package-job:   
+  stage: package
+  script:
+    - "cd OrderServer"
+    - echo "Package the code"
+    - "gradle assemble"
+  only:
+    - main
+
+deploy-job:      
+  stage: deploy  
+  script:
+    - echo "Deploying application..."
+    # Add your deployment commands here
+    - echo "Application successfully deployed."
+  only:
+    - main

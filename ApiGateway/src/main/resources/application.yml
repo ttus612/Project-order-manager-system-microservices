@@ -1,0 +1,98 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-server:8761/eureka/
+    register-with-eureka:
+      value: true
+    fetch-registry:
+      value: true
+    # instance:
+    #   hostname: localhost
+
+spring:
+  application:
+    name: ApiGateway
+  cloud:
+    gateway:
+      routes:
+        - id: JWTServer
+          uri: lb://JWTServer
+          predicates:
+            - Path=/auth/**
+
+        - id: OrderServer
+          uri: lb://OrderServer
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - AuthenticationFilter
+#            - name: CircuitBreaker
+#              args:
+#                name: OrderServerCircuitBreaker
+#                fallbackUri: forward:/fallback/orderServerFallback
+
+        - id: UserServer
+          uri: lb://UserServer
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - AuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: UserServerCircuitBreaker
+                fallbackUri: forward:/fallback/orderServerFallback
+
+        - id: ProductServer
+          uri: lb://ProductServer
+          predicates:
+            - Path=/api/products/**
+          filters:
+            - AuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: ProductServerCircuitBreaker
+                fallbackUri: forward:/fallback/productServerFallback
+
+        - id: SupplierServer
+          uri: lb://SupplierServer
+          predicates:
+            - Path=/api/suppliers/**
+          filters:
+            - AuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: SupplierServerCircuitBreaker
+                fallbackUri: forward:/fallback/supplierServerFallback
+
+        - id: ShippingServer
+          uri: lb://ShippingServer
+          predicates:
+            - Path=/api/shippings/**
+          filters:
+            - AuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: ShippingServerCircuitBreaker
+                fallbackUri: forward:/fallback/shippingServerFallback
+
+        - id: WarehouseServer
+          uri: lb://WarehouseServer
+          predicates:
+            - Path=/api/warehouses/**
+          filters:
+            - AuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: WarehouseServerCircuitBreaker
+                fallbackUri: forward:/fallback/warehouseServerFallback
+#            - name: RequestRateLimiter
+#              args:
+#                redis-rate-limiter.replenishRate: 1
+#                redis-rate-limiter.burstCapacity: 2
+#                redis-rate-limiter.requestedTokens: 1
+
+
+  data:
+    redis:
+      host: redis
+      port: 6379

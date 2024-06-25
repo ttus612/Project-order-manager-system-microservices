@@ -1,0 +1,59 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka/
+    register-with-eureka:
+      value: true
+    fetch-registry:
+      value: true
+    # instance:
+    #   hostname: localhost
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      orderService:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+
+  rate-limiter:
+    instances:
+      orderService:
+        registerHealthIndicator: false
+        limitForPeriod: 3
+        limitRefreshPeriod: 20s
+        timeoutDuration: 3s
+
+
+  retry:
+    instances:
+      orderService:
+        max-attempts: 5
+        wait-duration: 5000ms
+    metrics:
+      legacy:
+        enabled: true
+      enabled: true
+
+
+
+
