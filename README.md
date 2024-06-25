@@ -1,9 +1,48 @@
-# Order-Manager-System
+﻿# Order-Manager-System
 
-# Diagram - Microservice Architecture
+## Diagram - Microservice Architecture
 
 ![Diagram Backend](DiagramOrderManagerSystem.jpg)
 
+## Project Name: Order Manager System (Microservice)
+
+## Databases: 
+Redis, MariaDB
+
+## Backend Framework: 
+Spring Boot
+
+## Server Components: 
+Order Service, User Service, Product Service, Supplier Service, Warehouse Service, Shipping Service, JWT Service, API Gateway, Discovery Service
+
+## Cloud Provider: 
+AWS (EC2)
+
+## CI/CD Tools: 
+GitLab CI/CD, Jenkins
+
+## Resilience Patterns (Resilience4j): 
+Retry, Circuit Breaker, Rate Limiter
+
+## Containerization: 
+Docker
+
+## Testing Framework: 
+Postman
+
+## Agile Methodology: 
+Scrum
+
+## Project Description:
+The Order Manager System is a microservices-based architecture designed to handle various aspects of order management in a scalable and resilient manner. Leveraging Spring Boot for the backend services, the system utilizes Redis and MariaDB for data storage, ensuring efficient data handling and retrieval. Each microservice (Order, User, Product, Supplier, Warehouse, Shipping, JWT) is independently deployable and communicates through an API Gateway, managed for service discovery.
+
+Deployed on AWS EC2 instances, the system follows CI/CD practices facilitated by GitLab CI/CD and Jenkins, ensuring automated builds, testing, and deployments. Resilience patterns implemented using Resilience4j (Retry, Circuit Breaker, Rate Limiter) enhance system reliability and fault tolerance.
+
+Containerization with Docker allows for consistent deployment across different environments, while testing is conducted using Postman for API validation and integration testing.
+
+Agile practices, specifically Scrum, drive the project management through tools like Jira, facilitating iterative development, continuous improvement, and rapid response to changing requirements.
+
+Overall, the Order Manager System aims to provide a robust, scalable, and responsive platform for efficient order processing and management, leveraging modern cloud and DevOps practices to deliver high availability and performance.
 
 ## Getting started
 
